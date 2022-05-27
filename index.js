@@ -9,6 +9,11 @@ dotenv.config();
 app.use(json());
 app.use(cors());
 
+app.use(categoriesRouter);
+app.use(gamesRouter);
+app.use(costumersRouter);
+app.use(rentalsRouter);
 
-const port = process.env.PORT || 5000;
+
+const port = process.env.PORT || 4000;
 app.listen(port, () => console.log(chalk.white.bold.bgGreenBright(`\n Application is running on port ${port}... \n`)));
