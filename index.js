@@ -3,6 +3,11 @@ import cors from "cors";
 import chalk from "chalk";
 import dotenv from "dotenv";
 
+import categoriesRouter from "./routes/categoriesRouter.js";
+import gamesRouter from "./routes/gamesRouter.js";
+import costumersRouter from "./routes/costumersRouter.js";
+import rentalsRouter from "./routes/rentalsRouter.js";
+
 const app = express();
 dotenv.config();
 
