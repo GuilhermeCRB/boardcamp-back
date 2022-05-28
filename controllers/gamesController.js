@@ -3,10 +3,20 @@ import chalk from "chalk";
 import db from "../database-boardcamp/db.js";
 
 export async function getGames(req, res) {
+    const { name } = req.query;
+
     try {
         const gamesQuery = await db.query("SELECT * FROM games");
         const gamesList = gamesQuery.rows;
-        return res.status(200).send(gamesList);
+
+        if(!name){
+            return res.status(200).send(gamesList);
+        }
+
+        const pattern = new RegExp(name);
+        const gamesFiltered = gamesList.filter(gameFromList => gameFromList.name.toLowerCase().match(pattern));
+
+        return res.status(200).send(gamesFiltered);        
     } catch (e) {
         console.log(chalk.red.bold("\nAn error occured while trying to get games."));
         return res.status(500).send(e);
