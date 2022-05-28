@@ -13,7 +13,7 @@ export async function getGames(req, res) {
             return res.status(200).send(gamesList);
         }
 
-        const pattern = new RegExp(name);
+        const pattern = new RegExp(`^${name}`);
         const gamesFiltered = gamesList.filter(gameFromList => gameFromList.name.toLowerCase().match(pattern));
 
         return res.status(200).send(gamesFiltered);        
