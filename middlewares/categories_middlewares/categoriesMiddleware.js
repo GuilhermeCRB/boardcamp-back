@@ -1,6 +1,6 @@
 import { stripHtml } from "string-strip-html";
 import Joi from "joi";
-import db from "../database-boardcamp/db.js";
+import db from "../../database-boardcamp/db.js";
 
 export async function validateCategory(req, res, next) {
     const categoryReceived = req.body;
