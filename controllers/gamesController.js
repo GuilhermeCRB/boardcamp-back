@@ -6,7 +6,7 @@ export async function getGames(req, res) {
     const { name } = req.query;
 
     try {
-        const gamesQuery = await db.query("SELECT * FROM games");
+        const gamesQuery = await db.query(`SELECT games.*, categories.name as "categoryName" FROM games JOIN categories ON games."categoryId" = categories.id`);
         const gamesList = gamesQuery.rows;
 
         if(!name){
