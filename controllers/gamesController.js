@@ -2,6 +2,17 @@ import chalk from "chalk";
 
 import db from "../database-boardcamp/db.js";
 
+export async function getGames(req, res) {
+    try {
+        const gamesQuery = await db.query("SELECT * FROM games");
+        const gamesList = gamesQuery.rows;
+        return res.status(200).send(gamesList);
+    } catch (e) {
+        console.log(chalk.red.bold("\nAn error occured while trying to get games."));
+        return res.status(500).send(e);
+    }
+}
+
 export async function createGame(req, res) {
     const { game } = res.locals;
     const values = Object.values(game);
