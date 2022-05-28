@@ -22,7 +22,7 @@ export async function validateCategory(req, res, next) {
         const categoriesList = categoriesQuery.rows;
 
         const thereIsCategory = categoriesList.filter(categoryFromDB => categoryFromDB.name.toLowerCase() === category.name.toLowerCase());
-        console.log(thereIsCategory)
+        
         if (thereIsCategory.length !== 0) {
             return res.status(409).send("Category already exists!");
         }
