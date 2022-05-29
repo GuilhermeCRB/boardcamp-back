@@ -23,6 +23,21 @@ export async function getCustomers(req, res) {
     }
 }
 
+export async function getCustomersById(req, res) {
+    const { id } = req.params;
+
+    try {
+        const customerQuery = await db.query("SELECT * FROM customers WHERE id = $1", [id]);
+        const customer = customerQuery.rows;
+
+        return res.status(200).send(customer);        
+    } catch (e) {
+        console.log(e)
+        console.log(chalk.red.bold("\nAn error occured while trying to get customer by the id."));
+        return res.status(500).send(e);
+    }
+}
+
 export async function createCustomer(req, res) {
     const { customer } = res.locals;
     const values = Object.values(customer);
