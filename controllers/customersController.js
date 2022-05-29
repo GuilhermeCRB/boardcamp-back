@@ -2,6 +2,27 @@ import chalk from "chalk";
 
 import db from "../database-boardcamp/db.js";
 
+export async function getCustomers(req, res) {
+    const { cpf } = req.query;
+
+    try {
+        const customersQuery = await db.query("SELECT * FROM customers");
+        const customersList = customersQuery.rows;
+
+        if(!cpf){
+            return res.status(200).send(customersList);
+        }
+
+        const pattern = new RegExp(`^${cpf}`);
+        const customerFiltered = customersList.filter(customerFromList => customerFromList.cpf.match(pattern));
+
+        return res.status(200).send(customerFiltered);        
+    } catch (e) {
+        console.log(chalk.red.bold("\nAn error occured while trying to get games."));
+        return res.status(500).send(e);
+    }
+}
+
 export async function createCustomer(req, res) {
     const { customer } = res.locals;
     const values = Object.values(customer);
