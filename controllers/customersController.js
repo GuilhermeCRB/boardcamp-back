@@ -30,6 +30,10 @@ export async function getCustomersById(req, res) {
         const customerQuery = await db.query("SELECT * FROM customers WHERE id = $1", [id]);
         const customer = customerQuery.rows;
 
+        if(customer.length === 0){
+            return res.sendStatus(404);
+        }
+
         return res.status(200).send(customer);        
     } catch (e) {
         console.log(e)
