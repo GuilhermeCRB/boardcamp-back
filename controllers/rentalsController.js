@@ -3,6 +3,51 @@ import dayjs from "dayjs";
 
 import db from "../database-boardcamp/db.js";
 
+export async function getRentals(req, res) {
+
+    try {
+        const rentalsQuery = await db.query(`
+            SELECT rentals.*, customers.name AS "customerName", games."categoryId",
+                games.name AS "gameName", categories.name AS "categoryName"
+            FROM rentals
+            JOIN customers ON rentals."customerId" = customers.id
+            JOIN games ON rentals."gameId" = games.id
+            JOIN categories ON games."categoryId" = categories.id
+        `);
+
+        const rentalsList = rentalsQuery.rows.map(rental => {
+            const {id, customerId, gameId, rentDate, daysRented, returnDate, originalPrice, delayFee, customerName, gameName, categoryId, categoryName} = rental;
+            const formattedRental = {
+                id,
+                customerId,
+                gameId,
+                rentDate,
+                daysRented,
+                returnDate,
+                originalPrice,
+                delayFee,
+                customer: {
+                    id: gameId,
+                    name: customerName
+                },
+                game: {
+                    id: customerId,
+                    name: gameName,
+                    categoryId,
+                    categoryName
+                }
+            }
+
+            return formattedRental;
+        });
+
+        return res.status(200).send(rentalsList);
+    } catch (e) {
+        console.log(chalk.red.bold("\nAn error occured while trying to get rentals."));
+        return res.status(500).send(e);
+    }
+}
+
 export async function createRental(req, res) {
     const { customerId, gameId, daysRented } = req.body;
     const { gamePrice } = res.locals;
@@ -30,26 +75,6 @@ export async function createRental(req, res) {
 }
 
 
-// export async function getCustomers(req, res) {
-//     const { cpf } = req.query;
-
-//     try {
-//         const customersQuery = await db.query("SELECT * FROM customers");
-//         const customersList = customersQuery.rows;
-
-//         if(!cpf){
-//             return res.status(200).send(customersList);
-//         }
-
-//         const pattern = new RegExp(`^${cpf}`);
-//         const customerFiltered = customersList.filter(customerFromList => customerFromList.cpf.match(pattern));
-
-//         return res.status(200).send(customerFiltered);        
-//     } catch (e) {
-//         console.log(chalk.red.bold("\nAn error occured while trying to get games."));
-//         return res.status(500).send(e);
-//     }
-// }
 
 // export async function getCustomersById(req, res) {
 //     const { id } = req.params;
