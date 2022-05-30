@@ -10,8 +10,6 @@ export async function checkGameAvailability(req, res, next) {
         const rentalGameQuery = await db.query(`SELECT * FROM rentals WHERE "gameId" = $1`, [gameId]);
         const rentalList = rentalGameQuery.rows;
 
-        console.log(stock - rentalList.length)
-
         if (rentalList.length >= stock) {
             return res.status(400).send("Game is unavailable!");
         }

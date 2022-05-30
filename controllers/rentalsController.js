@@ -1,9 +1,13 @@
 import chalk from "chalk";
 import dayjs from "dayjs";
+import { parse } from "dotenv";
 
 import db from "../database-boardcamp/db.js";
 
 export async function getRentals(req, res) {
+    const { customerId, gameId } = req.query;
+    const customerIdQuery = parseInt(customerId);
+    const gameIdQuery = parseInt(gameId);
 
     try {
         const rentalsQuery = await db.query(`
@@ -15,8 +19,8 @@ export async function getRentals(req, res) {
             JOIN categories ON games."categoryId" = categories.id
         `);
 
-        const rentalsList = rentalsQuery.rows.map(rental => {
-            const {id, customerId, gameId, rentDate, daysRented, returnDate, originalPrice, delayFee, customerName, gameName, categoryId, categoryName} = rental;
+        let rentalsList = rentalsQuery.rows.map(rental => {
+            const { id, customerId, gameId, rentDate, daysRented, returnDate, originalPrice, delayFee, customerName, gameName, categoryId, categoryName } = rental;
             const formattedRental = {
                 id,
                 customerId,
@@ -27,19 +31,29 @@ export async function getRentals(req, res) {
                 originalPrice,
                 delayFee,
                 customer: {
-                    id: gameId,
+                    id: customerId,
                     name: customerName
                 },
                 game: {
-                    id: customerId,
+                    id: gameId,
                     name: gameName,
                     categoryId,
                     categoryName
                 }
             }
 
+            
             return formattedRental;
         });
+
+        
+        if(customerIdQuery){
+            rentalsList = rentalsList.filter(rental => rental.customerId === customerIdQuery);
+        }
+
+        if(gameIdQuery){
+            rentalsList = rentalsList.filter(rental => rental.gameId === gameIdQuery);
+        }
 
         return res.status(200).send(rentalsList);
     } catch (e) {
