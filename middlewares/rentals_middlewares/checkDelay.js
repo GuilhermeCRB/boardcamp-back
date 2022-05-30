@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import isBetween from "dayjs/plugin/isBetween.js"
 import duration from "dayjs/plugin/duration.js";
 
-export async function checkDelay(req, res, next) {
+export function checkDelay(req, res, next) {
     dayjs.extend(isBetween);
     dayjs.extend(duration);
 
