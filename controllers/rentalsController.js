@@ -106,3 +106,16 @@ export async function updateRental(req, res) {
     }
 }
 
+export async function deleteRental(req, res) {
+    const { id } = req.params;
+
+    try {
+        await db.query(`DELETE FROM rentals WHERE id = $1`, [id]);
+
+        return res.sendStatus(200);
+    } catch (e) {
+        console.log(chalk.red.bold("\nAn error occured while trying to delete rental."));
+        return res.status(500).send(e);
+    }
+}
+
