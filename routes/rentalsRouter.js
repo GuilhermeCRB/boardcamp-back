@@ -6,11 +6,12 @@ import { checkGameAvailability } from "../middlewares/rentals_middlewares/checkG
 import { validateCustomerID } from "../middlewares/rentals_middlewares/validateCustomerID.js";
 import { validateGameID } from "../middlewares/rentals_middlewares/validateGameID.js";
 import { validateRental } from "../middlewares/rentals_middlewares/validateRental.js";
+import { validateRentalID } from "../middlewares/rentals_middlewares/validateRentalID.js";
 
 const rentalsRouter = Router();
 
 rentalsRouter.get("/rentals", getRentals);
 rentalsRouter.post("/rentals", validateRental, validateCustomerID, validateGameID, checkGameAvailability, createRental);
-rentalsRouter.post("/rentals/:id/return", checkDelay, updateRental);
+rentalsRouter.post("/rentals/:id/return", validateRentalID, checkDelay, updateRental);
 
 export default rentalsRouter;
