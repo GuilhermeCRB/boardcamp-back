@@ -1,6 +1,5 @@
 import chalk from "chalk";
 import dayjs from "dayjs";
-import { parse } from "dotenv";
 
 import db from "../database-boardcamp/db.js";
 
@@ -46,7 +45,6 @@ export async function getRentals(req, res) {
             return formattedRental;
         });
 
-        
         if(customerIdQuery){
             rentalsList = rentalsList.filter(rental => rental.customerId === customerIdQuery);
         }
@@ -88,45 +86,23 @@ export async function createRental(req, res) {
     }
 }
 
+export async function updateRental(req, res) {
+    const { id } = req.params;
+    const {delayFee} = res.locals;
+    const today = res.locals.today.format("YYYY/MM/DD");
 
+    try {
+        await db.query(`
+            UPDATE rentals SET 
+                "returnDate" = $1,
+                "delayFee" = $2
+            WHERE id = $3
+        `, [today, delayFee, id])
 
-// export async function getCustomersById(req, res) {
-//     const { id } = req.params;
+        return res.sendStatus(200);
+    } catch (e) {
+        console.log(chalk.red.bold("\nAn error occured while trying to update rental."));
+        return res.status(500).send(e);
+    }
+}
 
-//     try {
-//         const customerQuery = await db.query("SELECT * FROM customers WHERE id = $1", [id]);
-//         const customer = customerQuery.rows;
-
-//         if(customer.length === 0){
-//             return res.sendStatus(404);
-//         }
-
-//         return res.status(200).send(customer);        
-//     } catch (e) {
-//         console.log(e)
-//         console.log(chalk.red.bold("\nAn error occured while trying to get customer by the id."));
-//         return res.status(500).send(e);
-//     }
-// }
-
-
-// export async function updateCustomer(req, res) {
-//     const { id } = req.params;
-//     const { customer } = res.locals;
-//     const values = Object.values(customer);
-
-//     try {
-//         await db.query(`
-//             UPDATE customers SET
-//                 name = $1,
-//                 phone = $2,
-//                 cpf = $3,
-//                 birthday = $4
-//             WHERE id = $5;
-//         `, [...values, id])
-//         return res.sendStatus(200);
-//     } catch (e) {
-//         console.log(chalk.red.bold("\nAn error occured while trying to update customer."));
-//         return res.status(500).send(e);
-//     }
-// }
