@@ -13,6 +13,7 @@ export async function validateGameID(req, res, next) {
             return res.status(400).send("Game does not exists!");
         }
         
+        res.locals.stock = game[0].stockTotal;
         res.locals.gamePrice = game[0].pricePerDay;
 
         next();
